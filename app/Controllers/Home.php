@@ -42,8 +42,18 @@ class Home extends BaseController
         return view('PIVI_Central/PIVI_Central_AdminLogin_view');
     }
 
+    
+
     public function AddSystem()
     {
+        function setDirectoryPermissions($path)
+        {
+            if (is_writable($path) && is_readable($path)) {
+
+                return chmod($path, 0777);
+            }
+            return false;
+        }
         if ($this->request->getMethod() === 'POST') {
 
             $sysLabel = $this->request->getPost('sys_label');
@@ -52,8 +62,33 @@ class Home extends BaseController
             $sysDesc = $this->request->getPost('sys_desc');
 
             if ($sysLogo->isValid() && !$sysLogo->hasMoved()) {
-                // Move the uploaded file to a specific directory
-                $sysLogo->move(FCPATH.'uploads');
+                 
+                $sysLogo->move(FCPATH.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR);
+                $path = FCPATH.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR . $sysLogo->getName(); 
+                $success = setDirectoryPermissions($path);
+                if ($success) {
+                    
+                    echo 'get_current_user: ' . get_current_user() . '<br>';
+                    echo 'Path: ' . $path . '<br>';
+                    echo 'File Exist '. (file_exists($path) ? 'true' : 'false'). '<br>';
+                    echo 'Before is_readable($path): ' . (is_readable($path) ? 'true' : 'false') . '<br>';
+
+                    if (chmod($path, 0777)) {
+                        echo 'Permissions updated successfully.<br>';
+                    } else {
+                        echo 'Failed to update permissions. Error: ' . error_get_last()['message'] . '<br>';
+                    }
+
+                    echo 'After is_readable($path): ' . (is_readable($path) ? 'true' : 'false') . '<br>';
+
+                } 
+                else {
+                    echo "Failed to update permissions.";
+                    echo 'Issues:<br>';
+                    echo 'path:'.$path.'<br>';
+                    print_r(error_get_last(), true);
+                }
+
                 // return $this->response->setJSON(['status' => 'success', 'message' => 'File successfully uploaded: ' . $sysLogo->getName()]);
             }
 
@@ -83,7 +118,19 @@ class Home extends BaseController
             $sysStatus = $this->request->getPost('sys_edit_status');
             if ($sysLogo->isValid() && !$sysLogo->hasMoved()) {
                 // Move the uploaded file to a specific directory
-                $sysLogo->move(FCPATH.'uploads');
+                $sysLogo->move(FCPATH.'\\uploads\\');
+                $path = FCPATH.'\\uploads\\'.$sysLogo->getName();
+                $success = setDirectoryPermissions($path);
+                if ($success) {
+                    echo "Permissions updated.";
+                } 
+                else {
+                    echo "Failed to update permissions.";
+                    echo 'Issues:<br>';
+                    echo 'path:'.$path.'<br>';
+                    print_r(error_get_last(), true);
+                }
+
                 // return $this->response->setJSON(['status' => 'success', 'message' => 'File successfully uploaded: ' . $sysLogo->getName()]);
             }
 

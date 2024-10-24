@@ -81,7 +81,7 @@
                 $('#system_list').empty();
                 data.forEach(row => {
                     if(row.SL_Status=='Active'){
-                        $('#system_list').append(`  <div class="col-sm-3 col-lg-2 d-flex align-items-stretch">
+                        $('#system_list').append(`  <div class="col-sm-12 col-lg-2 d-flex align-items-stretch">
                                                     <div class="card shadow-sm mt-5 mb-5 cardbody"> 
                                                         <div class="card-body text-center">
                                                             <div class="grow">
@@ -116,7 +116,7 @@
                     console.log(data);
                     data.forEach(row => {
                         if(row.SL_Status=='Active'){
-                            $('#system_list').append(`  <div class="col-sm-3 col-lg-2 d-flex align-items-stretch">
+                            $('#system_list').append(`  <div class="col-sm-12 col-lg-2 d-flex align-items-stretch">
                                                         <div class="card shadow-sm mt-5 mb-5 cardbody"> 
                                                             <div class="card-body text-center">
                                                                 <div class="grow"><a target="_blank" href="${row.SL_URL}"><img src="${baseurl+'/'+row.SL_Logo}" alt="image not found" class="sys_image"></a></div> 
