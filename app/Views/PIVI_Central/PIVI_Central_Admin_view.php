@@ -43,6 +43,61 @@
         transform: scale(1.2);
         transition: 1s ease;
     }
+
+    .my-custom-col {
+        width: 50%; /* Behave like col-sm-3 */
+        box-sizing: border-box; /* Include padding/border in width */
+        float: left; /* Align horizontally */
+         
+    }
+
+    /* Override styles for screens 576px and larger */
+    @media (min-width: 576px) {
+        .my-custom-col {
+            width: 25%; /* Reset or adjust for larger screens */
+        }
+
+        .sys_image{
+            width: 100%;
+            height: auto;
+        }
+
+        .grow{
+            height:150px;
+        }
+    }
+
+    @media (min-width: 1024px) and (orientation: landscape) {
+        .my-custom-col {
+            width: 20%; /* Reset or adjust for larger screens */
+        }
+        
+        .sys_image{
+            width: 100%;
+            height: auto;
+        }
+
+        .grow{
+            height:150px;
+        }
+    }
+    
+    /* Mobile View */
+    @media (max-width: 767px) and (orientation: portrait) {
+        .my-custom-col {
+            width: 50%; /* Reset or adjust for larger screens */
+        }
+        
+        .sys_image{
+            width: 100%;
+            height: auto;
+        }
+
+        .grow{
+            height:150px;
+        }
+    } 
+    /* Mobile View */
 </style>
 
 <body  >  
@@ -89,7 +144,7 @@
                         <div class="col-sm-12">
                             <div class="form-group">
                                 <label class="fw-bold" for="sys_logo">Logo:</label> 
-                                <input type="file" class="form-control" name="sys_logo" id="sys_logo">
+                                <input accept="image/png, image/gif, image/jpeg"  type="file" class="form-control" name="sys_logo" id="sys_logo">
                             </div>
                         </div>
                     </div>
@@ -106,6 +161,14 @@
                             <div class="form-group">
                                 <label class="fw-bold" for="sys_desc">Description:</label> 
                                 <input type="text" class="form-control" name="sys_desc" id="sys_desc">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="fw-bold" for="sort_order">Sort Order:</label> 
+                                <input type="number" class="form-control" name="sort_order" id="sort_order">
                             </div>
                         </div>
                     </div>
@@ -168,6 +231,14 @@
                             <div class="form-group">
                                 <label class="fw-bold" for="sys_edit_desc">Description:</label> 
                                 <input type="text" class="form-control" name="sys_edit_desc" id="sys_edit_desc">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="fw-bold" for="edit_sort_order">Sort Order:</label> 
+                                <input type="text" class="form-control" name="edit_sort_order" id="edit_sort_order">
                             </div>
                         </div>
                     </div>
@@ -249,7 +320,7 @@
                 data = JSON.parse(data);
                 $('#system_list').empty();
                 data.forEach(row => { 
-                    $('#system_list').append(`  <div class="col-sm-3 col-lg-2 d-flex align-items-stretch">
+                    $('#system_list').append(`  <div class="col-sm-3 col-lg-2 d-flex my-custom-col">
                                                     <div class="card shadow-sm mt-5 mb-5 cardbody"> 
                                                         <div class="card-body text-center">
                                                             <div class="grow"><a target="_blank" href="${row.SL_URL}"><img src="${baseurl+'/'+row.SL_Logo}" alt="image not found" class="sys_image"></a></div> 
@@ -261,6 +332,7 @@
                                                                 data-url="${row.SL_URL}"
                                                                 data-desc="${row.SL_Description}"
                                                                 data-status="${row.SL_Status}"
+                                                                data-sortorder="${row.SL_Sort_Order}"
 
                                                             data-bs-toggle="modal" data-bs-target="#edit_system_mdl" href="#!" class="editsys btn btn-sm btn-primary"><i class="fa-solid fa-pen"></i> Edit</a> 
                                                         </div>
@@ -295,12 +367,14 @@
             sys_url     = $(this).attr("data-url");
             sys_desc    = $(this).attr("data-desc");
             sys_status  = $(this).attr("data-status");
+            sort_order  = $(this).attr("data-sortorder");
            
 
             $('#sys_edit_refno').val(sys_refno);
             $('#sys_edit_label').val(sys_label);
             $('#sys_edit_url').val(sys_url);
             $('#sys_edit_desc').val(sys_desc); 
+            $('#edit_sort_order').val(sort_order); 
             $("#sys_preview_logo").attr("src", baseurl+'/'+sys_logo);
 
             getstatus(sys_status); 

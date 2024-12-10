@@ -23,6 +23,7 @@ class PIVI_Central_Model extends Model
     public function GetSystems(){
         $builder = $this->db->table("Systems_List");
         $builder->select("*");
+        $builder->orderBy("SL_Sort_Order");
         // $builder->where("SL_Status","Active");
 
         $query = $builder->get();

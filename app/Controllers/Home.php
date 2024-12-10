@@ -50,7 +50,7 @@ class Home extends BaseController
         {
             if (is_writable($path) && is_readable($path)) {
 
-                return chmod($path, 0777);
+                return chmod($path, 0666);
             }
             return false;
         }
@@ -60,11 +60,13 @@ class Home extends BaseController
             $sysLogo = $this->request->getFile('sys_logo');
             $sysUrl = $this->request->getPost('sys_url');
             $sysDesc = $this->request->getPost('sys_desc');
+            $sort_order = $this->request->getPost('sort_order');
 
             if ($sysLogo->isValid() && !$sysLogo->hasMoved()) {
                  
                 $sysLogo->move(FCPATH.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR);
                 $path = FCPATH.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR . $sysLogo->getName(); 
+                $path = FCPATH;
                 $success = setDirectoryPermissions($path);
                 if ($success) {
                     
@@ -73,7 +75,7 @@ class Home extends BaseController
                     echo 'File Exist '. (file_exists($path) ? 'true' : 'false'). '<br>';
                     echo 'Before is_readable($path): ' . (is_readable($path) ? 'true' : 'false') . '<br>';
 
-                    if (chmod($path, 0777)) {
+                    if (chmod($path, 0666)) {
                         echo 'Permissions updated successfully.<br>';
                     } else {
                         echo 'Failed to update permissions. Error: ' . error_get_last()['message'] . '<br>';
@@ -97,6 +99,7 @@ class Home extends BaseController
                 'SL_Logo'           => 'uploads/'.$sysLogo->getName(),
                 'SL_URL'            => $sysUrl,
                 'SL_Description'    => $sysDesc,
+                'SL_Sort_Order'     => $sort_order,
                 // 'SL_Status'         => $sysLabel,
                 'SL_Audit_User'     => session('u_id')
                 // session('u_id')
@@ -107,7 +110,15 @@ class Home extends BaseController
     }
 
     public function EditSystem()
-    {
+    {   
+        function setDirectoryPermissions($path)
+        {
+            if (is_writable($path) && is_readable($path)) {
+
+                return chmod($path, 0666);
+            }
+            return false;
+        }
         if ($this->request->getMethod() === 'POST') {
 
             $sysRefno = $this->request->getPost('sys_edit_refno');
@@ -116,6 +127,7 @@ class Home extends BaseController
             $sysUrl = $this->request->getPost('sys_edit_url');
             $sysDesc = $this->request->getPost('sys_edit_desc');
             $sysStatus = $this->request->getPost('sys_edit_status');
+            $sort_order = $this->request->getPost('edit_sort_order');
             if ($sysLogo->isValid() && !$sysLogo->hasMoved()) {
                 // Move the uploaded file to a specific directory
                 $sysLogo->move(FCPATH.'\\uploads\\');
@@ -145,6 +157,7 @@ class Home extends BaseController
                     'SL_Logo'           => 'uploads/'.$sysLogo->getName(),
                     'SL_URL'            => $sysUrl,
                     'SL_Description'    => $sysDesc,
+                    'SL_Sort_Order'     => $sort_order,
                     'SL_Status'         => $sysStatus,
                     'SL_Audit_User'     => session('u_id'),
                     'SL_Audit_Date'     => $currentdatetime 
@@ -155,6 +168,7 @@ class Home extends BaseController
                     // 'SL_Logo'           => 'uploads/'.$sysLogo->getName(),
                     'SL_URL'            => $sysUrl,
                     'SL_Description'    => $sysDesc,
+                    'SL_Sort_Order'     => $sort_order,
                     'SL_Status'         => $sysStatus,
                     'SL_Audit_User'     => session('u_id'),
                     'SL_Audit_Date'     => $currentdatetime 
